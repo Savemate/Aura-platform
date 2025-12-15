@@ -1,0 +1,493 @@
+// aura-server.js - COMPLETE AURA BACKEND
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const { exec } = require('child_process');
+
+const app = express();
+const PORT = 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve HTML interface
+app.get('/', (req, res) => {
+    res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>AURA Platform</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            .code-bg { background: #1a1a1a; color: #f8f8f2; }
+            .typewriter { overflow: hidden; border-right: .15em solid #667eea; white-space: nowrap; animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite; }
+            @keyframes typing { from { width: 0 } to { width: 100% } }
+            @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #667eea; } }
+        </style>
+    </head>
+    <body class="bg-gray-50">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header -->
+            <header class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4 typewriter">
+                    <i class="fas fa-robot text-blue-600"></i> AURA Platform
+                </h1>
+                <p class="text-xl text-gray-600">Build websites instantly. Real code. Ready to deploy.</p>
+            </header>
+
+            <!-- Main Interface -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold mb-6">Generate Website</h2>
+                <div class="space-y-4">
+                    <input type="text" id="siteName" placeholder="Website Name" class="w-full p-3 border rounded" value="My Startup">
+                    <select id="siteType" class="w-full p-3 border rounded">
+                        <option>Landing Page</option>
+                        <option>Portfolio</option>
+                        <option>SaaS Dashboard</option>
+                        <option>E-commerce</option>
+                    </select>
+                    <button onclick="generateSite()" class="w-full py-3 bg-blue-600 text-white rounded-lg font-bold">
+                        <i class="fas fa-magic mr-2"></i> Generate Website
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="space-y-6 hidden">
+                <!-- Preview -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Live Preview</h2>
+                    <div id="preview" class="border rounded p-4 h-64 overflow-auto">
+                        Preview will appear here
+                    </div>
+                </div>
+
+                <!-- Code -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Generated Code</h2>
+                    <div class="flex space-x-2 mb-4">
+                        <button onclick="showCode('html')" class="px-4 py-2 bg-blue-600 text-white rounded">HTML</button>
+                        <button onclick="showCode('css')" class="px-4 py-2 bg-gray-200 rounded">CSS</button>
+                        <button onclick="showCode('js')" class="px-4 py-2 bg-gray-200 rounded">JS</button>
+                    </div>
+                    <div id="codeDisplay" class="code-bg rounded p-4 h-64 overflow-auto">
+                        <pre><code>// Code will appear here</code></pre>
+                    </div>
+                    <div class="mt-4 flex space-x-3">
+                        <button onclick="downloadCode()" class="flex-1 py-2 bg-green-600 text-white rounded">
+                            <i class="fas fa-download mr-2"></i> Download
+                        </button>
+                        <button onclick="copyCode()" class="flex-1 py-2 bg-blue-600 text-white rounded">
+                            <i class="fas fa-copy mr-2"></i> Copy Code
+                        </button>
+                        <button onclick="deploySite()" class="flex-1 py-2 bg-purple-600 text-white rounded">
+                            <i class="fas fa-rocket mr-2"></i> Deploy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-12 text-center text-gray-600">
+                <p><i class="fas fa-code mr-2"></i> AURA v1.0 • MagTec Invest • Ready to Build</p>
+            </footer>
+        </div>
+
+        <script>
+            let currentWebsite = null;
+
+            async function generateSite() {
+                const name = document.getElementById('siteName').value;
+                const type = document.getElementById('siteType').value;
+
+                document.getElementById('preview').innerHTML = '<div class="flex items-center justify-center h-full"><i class="fas fa-cog fa-spin text-3xl text-blue-600"></i></div>';
+                document.getElementById('results').classList.remove('hidden');
+
+                try {
+                    const response = await fetch('/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, type })
+                    });
+
+                    const website = await response.json();
+                    currentWebsite = website;
+
+                    // Show preview
+                    const previewFrame = document.createElement('iframe');
+                    previewFrame.style.width = '100%';
+                    previewFrame.style.height = '300px';
+                    previewFrame.style.border = 'none';
+                    previewFrame.srcdoc = \`<!DOCTYPE html>
+                    <html>
+                    <head><style>\${website.css}</style></head>
+                    <body>\${website.html}</body>
+                    <script>\${website.js}<\\/script>
+                    </html>\`;
+                    
+                    document.getElementById('preview').innerHTML = '';
+                    document.getElementById('preview').appendChild(previewFrame);
+
+                    // Show HTML code
+                    showCode('html');
+
+                    alert('Website generated successfully!');
+                } catch (error) {
+                    document.getElementById('preview').innerHTML = '<div class="text-red-600 text-center p-8">Error: ' + error.message + '</div>';
+                }
+            }
+
+            function showCode(type) {
+                if (!currentWebsite) return;
+                document.getElementById('codeDisplay').innerHTML = \`<pre><code>\${escapeHtml(currentWebsite[type])}</code></pre>\`;
+            }
+
+            function copyCode() {
+                if (!currentWebsite) return;
+                const code = currentWebsite.html + '\\n\\n' + currentWebsite.css + '\\n\\n' + currentWebsite.js;
+                navigator.clipboard.writeText(code).then(() => alert('Code copied!'));
+            }
+
+            function downloadCode() {
+                if (!currentWebsite) return;
+                const content = \`AURA Generated Website
+========================
+Generated: \${new Date().toLocaleString()}
+
+=== HTML ===
+\${currentWebsite.html}
+
+=== CSS ===
+\${currentWebsite.css}
+
+=== JavaScript ===
+\${currentWebsite.js}\`;
+                
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'website.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            function deploySite() {
+                alert('To deploy:\\n1. Save HTML as index.html\\n2. Save CSS as style.css\\n3. Save JS as script.js\\n4. Upload to Netlify (drag & drop)');
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        </script>
+    </body>
+    </html>
+    `);
+});
+
+// Generate website endpoint
+app.post('/generate', (req, res) => {
+    const { name, type } = req.body;
+    
+    const website = {
+        html: generateHTML(name, type),
+        css: generateCSS(name, type),
+        js: generateJS(name, type)
+    };
+    
+    res.json(website);
+});
+
+// Website generation functions
+function generateHTML(name, type) {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${name}</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">${name}</a>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <button class="cta-button">Get Started</button>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Welcome to ${name}</h1>
+            <p>Building amazing ${type.toLowerCase()} solutions</p>
+            <div class="hero-buttons">
+                <button class="btn-primary">Start Free Trial</button>
+                <button class="btn-secondary">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="services">
+        <div class="container">
+            <h2>Why Choose Us</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Fast Performance</h3>
+                    <p>Optimized for speed</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure & Reliable</h3>
+                    <p>Enterprise security</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Growth Focused</h3>
+                    <p>Scale with your business</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; ${new Date().getFullYear()} ${name}. Built with AURA.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>`;
+}
+
+function generateCSS(name, type) {
+    return `/* ${name} - Generated by AURA */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navigation */
+.navbar {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 20px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.cta-button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Hero */
+.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6rem 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: white;
+    color: #2563eb;
+    border: none;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+/* Features */
+.features {
+    padding: 5rem 0;
+    background: #f9fafb;
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.feature-card i {
+    font-size: 2.5rem;
+    color: #2563eb;
+    margin-bottom: 1rem;
+}
+
+/* Footer */
+.footer {
+    background: #1f2937;
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar .container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}`;
+}
+
+function generateJS(name, type) {
+    return `// ${name} - Interactive Script
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Button actions
+    document.querySelectorAll('.cta-button, .btn-primary').forEach(button => {
+        button.addEventListener('click', function() {
+            alert('Thank you for your interest in ${name}!');
+        });
+    });
+
+    console.log('${name} website loaded successfully!');
+});`;
+}
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`
+    🚀 AURA Platform running on port ${PORT}
+    
+    Open your browser to: http://localhost:${PORT}
+    
+    Features:
+    ✅ Website generation
+    ✅ Live preview
+    ✅ Code download
+    ✅ Ready to deploy
+    
+    No installation needed - just run and build!
+    `);
+    
+    // Try to open browser
+    const { platform } = process;
+    const openCommand = platform === 'win32' ? 'start' : platform === 'darwin' ? 'open' : 'xdg-open';
+    exec(`${openCommand} http://localhost:${PORT}`);
+});
