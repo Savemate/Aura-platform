@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA Builder - MagTec Invest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        .code-bg { background: #1a1a1a; color: #f8f8f2; }
+        .typewriter { overflow: hidden; border-right: .15em solid #667eea; white-space: nowrap; animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite; }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #667eea; } }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4 typewriter">AURA Website Builder</h1>
+            <p class="text-xl text-gray-600 mb-6">MagTec Invest's AI-Powered Development Platform</p>
+            <div class="flex justify-center space-x-4">
+                <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full font-medium">
+                    <i class="fas fa-robot mr-2"></i>AI-Powered
+                </span>
+                <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full font-medium">
+                    <i class="fas fa-code mr-2"></i>Real Code
+                </span>
+                <span class="px-4 py-2 bg-purple-100 text-purple-800 rounded-full font-medium">
+                    <i class="fas fa-bolt mr-2"></i>Instant Build
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Builder -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- Left: Specification Form -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-cogs text-blue-600 mr-3"></i>
+                    Website Specifications
+                </h2>
+                
+                <div id="specsForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Website Name</label>
+                        <input type="text" id="websiteName" 
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="e.g., My Startup, Company Website">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Website Type</label>
+                        <select id="websiteType" class="w-full p-3 border border-gray-300 rounded-lg">
+                            <option value="landing">Landing Page</option>
+                            <option value="portfolio">Portfolio</option>
+                            <option value="saas">SaaS Application</option>
+                            <option value="ecommerce">E-commerce</option>
+                            <option value="blog">Blog</option>
+                            <option value="business">Business Website</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Pages Needed</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600" value="home" checked>
+                                <span class="ml-2">Home</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600" value="about">
+                                <span class="ml-2">About</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600" value="services">
+                                <span class="ml-2">Services</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600" value="contact">
+                                <span class="ml-2">Contact</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600" value="blog">
+                                <span class="ml-2">Blog</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600" value="pricing">
+                                <span class="ml-2">Pricing</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Key Features</label>
+                        <textarea id="features" rows="3" 
+                                  class="w-full p-3 border border-gray-300 rounded-lg"
+                                  placeholder="Responsive design, contact form, animations, dark mode, etc."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Design Style</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button type="button" onclick="selectStyle('modern')" 
+                                    class="p-3 border rounded-lg text-center style-btn">
+                                <i class="fas fa-palette text-xl mb-2"></i><br>
+                                Modern
+                            </button>
+                            <button type="button" onclick="selectStyle('minimal')" 
+                                    class="p-3 border rounded-lg text-center style-btn">
+                                <i class="fas fa-minimize text-xl mb-2"></i><br>
+                                Minimal
+                            </button>
+                            <button type="button" onclick="selectStyle('bold')" 
+                                    class="p-3 border rounded-lg text-center style-btn">
+                                <i class="fas fa-bold text-xl mb-2"></i><br>
+                                Bold
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Technology Stack</label>
+                        <select id="techStack" class="w-full p-3 border border-gray-300 rounded-lg">
+                            <option value="html">HTML/CSS/JS (Vanilla)</option>
+                            <option value="react">React + Tailwind</option>
+                            <option value="nextjs">Next.js</option>
+                            <option value="vue">Vue.js</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="buildWebsite()" 
+                            class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg text-lg hover:opacity-90 transition flex items-center justify-center">
+                        <i class="fas fa-magic mr-3"></i>
+                        GENERATE WEBSITE CODE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Preview & Results -->
+            <div class="space-y-8">
+                <!-- Live Preview -->
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-eye text-green-600 mr-3"></i>
+                        Live Preview
+                    </h2>
+                    <div id="previewArea" class="border-2 border-dashed border-gray-300 rounded-lg p-4 h-64 overflow-auto">
+                        <p class="text-gray-500 text-center py-8">Website preview will appear here...</p>
+                    </div>
+                </div>
+                
+                <!-- Code Output -->
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-code text-purple-600 mr-3"></i>
+                        Generated Code
+                    </h2>
+                    <div class="mb-4">
+                        <div class="flex border-b">
+                            <button onclick="showTab('html')" class="px-4 py-2 font-medium tab-btn active">HTML</button>
+                            <button onclick="showTab('css')" class="px-4 py-2 font-medium tab-btn">CSS</button>
+                            <button onclick="showTab('js')" class="px-4 py-2 font-medium tab-btn">JS</button>
+                            <button onclick="showTab('instructions')" class="px-4 py-2 font-medium tab-btn">Instructions</button>
+                        </div>
+                    </div>
+                    <div id="codeOutput" class="code-bg rounded-lg p-4 h-64 overflow-auto">
+                        <pre class="text-sm"><code>// Your generated code will appear here</code></pre>
+                    </div>
+                    <div class="mt-4 flex justify-between">
+                        <button onclick="downloadCode()" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                            <i class="fas fa-download mr-2"></i>Download All
+                        </button>
+                        <button onclick="copyCode()" class="px-4 py-2 bg-gray-600 text-white rounded-lg">
+                            <i class="fas fa-copy mr-2"></i>Copy Code
+                        </button>
+                        <button onclick="deployWebsite()" class="px-4 py-2 bg-green-600 text-white rounded-lg">
+                            <i class="fas fa-rocket mr-2"></i>Deploy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Projects -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-history text-amber-600 mr-3"></i>
+                Recent Projects
+            </h2>
+            <div id="projectsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Projects will load here -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-600">
+            <p class="mb-2">
+                <i class="fas fa-shield-alt mr-2"></i>
+                AURA Platform v1.0 • Internal Use Only • MagTec Invest
+            </p>
+            <p class="text-sm">Founder: Tshedimosho Magabe Mlangeni • © 2024</p>
+        </footer>
+    </div>
+
+    <script>
+        let currentProject = null;
+        let currentCode = null;
+
+        function selectStyle(style) {
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-blue-500');
+            });
+            event.target.classList.add('ring-2', 'ring-blue-500');
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-blue-600', 'border-blue-500');
+                btn.classList.add('text-gray-500');
+            });
+            event.target.classList.add('active', 'text-blue-600', 'border-blue-500');
+            event.target.classList.remove('text-gray-500');
+            
+            if (currentCode) {
+                const content = currentCode[tabName] || `// No ${tabName.toUpperCase()} code available`;
+                document.getElementById('codeOutput').innerHTML = 
+                    `<pre class="text-sm"><code>${escapeHtml(content)}</code></pre>`;
+            }
+        }
+
+        async function buildWebsite() {
+            const specs = {
+                name: document.getElementById('websiteName').value || 'My Website',
+                type: document.getElementById('websiteType').value,
+                pages: Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                          .map(cb => cb.value),
+                features: document.getElementById('features').value.split(',').map(f => f.trim()),
+                style: document.querySelector('.style-btn.ring-2')?.innerText.trim() || 'modern',
+                tech: document.getElementById('techStack').value
+            };
+
+            if (!specs.name) {
+                alert('Please enter a website name');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('previewArea').innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fas fa-cog fa-spin text-3xl text-blue-600 mb-4"></i>
+                    <p class="text-gray-600">AURA is generating your website...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/build-website', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ specs })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentProject = data.projectId;
+                    currentCode = data.files;
+                    
+                    // Update preview
+                    const previewFrame = document.createElement('iframe');
+                    previewFrame.style.width = '100%';
+                    previewFrame.style.height = '400px';
+                    previewFrame.style.border = 'none';
+                    previewFrame.srcdoc = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <style>${data.files.css}</style>
+                        </head>
+                        <body>${data.files.html}</body>
+                        <script>${data.files.js}<\/script>
+                        </html>
+                    `;
+                    
+                    document.getElementById('previewArea').innerHTML = '';
+                    document.getElementById('previewArea').appendChild(previewFrame);
+                    
+                    // Show HTML code by default
+                    document.getElementById('codeOutput').innerHTML = 
+                        `<pre class="text-sm"><code>${escapeHtml(data.files.html)}</code></pre>`;
+                    
+                    // Load projects
+                    loadProjects();
+                    
+                    // Show success
+                    showNotification('Website generated successfully!', 'success');
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                console.error('Build error:', error);
+                document.getElementById('previewArea').innerHTML = `
+                    <div class="text-center py-12 text-red-600">
+                        <i class="fas fa-exclamation-triangle text-3xl mb-4"></i>
+                        <p>Error: ${error.message}</p>
+                        <button onclick="buildWebsite()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+                showNotification('Build failed: ' + error.message, 'error');
+            }
+        }
+
+        function copyCode() {
+            if (!currentCode) return;
+            
+            const codeToCopy = currentCode.html + '\n\n' + currentCode.css + '\n\n' + currentCode.js;
+            navigator.clipboard.writeText(codeToCopy)
+                .then(() => showNotification('Code copied to clipboard!', 'success'))
+                .catch(() => showNotification('Failed to copy', 'error'));
+        }
+
+        async function downloadCode() {
+            if (!currentCode) return;
+            
+            // In production, this would create a ZIP file
+            const content = `
+HTML (index.html):
+${currentCode.html}
+
+CSS (style.css):
+${currentCode.css}
+
+JavaScript (script.js):
+${currentCode.js}
+
+Instructions:
+${currentCode.instructions}
+            `;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'aura-website-code.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Code downloaded!', 'success');
+        }
+
+        function deployWebsite() {
+            if (!currentCode) return;
+            
+            const deployOptions = `
+Choose deployment method:
+
+1. Netlify (Recommended)
+   - Drag folder to netlify.com
+   - Free hosting with SSL
+
+2. Vercel
+   - Install: npm i -g vercel
+   - Run: vercel --prod
+
+3. GitHub Pages
+   - Push to GitHub repo
+   - Enable GitHub Pages
+
+4. Traditional Hosting
+   - Upload files via FTP
+   - Point domain to host
+
+${currentCode.instructions}
+            `;
+            
+            alert(deployOptions);
+            showNotification('Deployment instructions shown', 'info');
+        }
+
+        async function loadProjects() {
+            try {
+                const response = await fetch('http://localhost:3000/api/projects');
+                const data = await response.json();
+                
+                const container = document.getElementById('projectsList');
+                container.innerHTML = data.projects.slice(-3).reverse().map(project => `
+                    <div class="border rounded-lg p-4 hover:shadow-md transition">
+                        <h3 class="font-bold text-lg mb-2">${project.name}</h3>
+                        <p class="text-sm text-gray-600 mb-2">
+                            <i class="far fa-calendar mr-1"></i>
+                            ${new Date(project.createdAt).toLocaleDateString()}
+                        </p>
+                        <button onclick="loadProject('${project.id}')" 
+                                class="text-blue-600 text-sm hover:underline">
+                            <i class="fas fa-code mr-1"></i>View Code
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load projects:', error);
+            }
+        }
+
+        function escapeHtml(html) {
+            const div = document.createElement('div');
+            div.textContent = html;
+            return div.innerHTML;
+        }
+
+        function showNotification(message, type) {
+            const colors = {
+                success: 'bg-green-100 border-green-400 text-green-700',
+                error: 'bg-red-100 border-red-400 text-red-700',
+                info: 'bg-blue-100 border-blue-400 text-blue-700'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg border ${colors[type]} shadow-lg z-50`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProjects();
+            // Set default style
+            document.querySelector('.style-btn').click();
+        });
+    </script>
+</body>
+</html>
