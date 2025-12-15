@@ -1,19 +1,10 @@
 {
-  "name": "aura-platform",
+  "name": "aura-vercel",
   "version": "1.0.0",
-  "description": "MagTec Invest AI Website Builder",
-  "main": "aura-server.js",
+  "description": "AURA on Vercel",
+  "main": "index.html",
   "scripts": {
-    "start": "node aura-server.js",
-    "dev": "node aura-server.js",
-    "client": "open aura-client.html",
-    "test": "echo \"No tests\" && exit 0"
+    "build": "echo 'Building for Vercel...'"
   },
-  "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
-  },
-  "keywords": ["ai", "website-builder", "magtec", "aura"],
-  "author": "MagTec Invest",
-  "license": "UNLICENSED"
+  "dependencies": {}
 }
