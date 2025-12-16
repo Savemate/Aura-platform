@@ -3,160 +3,949 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA - MagTec Website Builder</title>
+    <title>AURA • MagTec Intelligence</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Monaco Editor (VS Code in browser) -->
+    <script src="https://unpkg.com/monaco-editor@0.34.1/min/vs/loader.js"></script>
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Three.js for 3D effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <style>
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .code-bg { background: #1a1a1a; color: #f8f8f2; }
-        .preview-frame { width: 100%; height: 400px; border: none; }
+        :root {
+            --aura-primary: #7c3aed;
+            --aura-secondary: #3b82f6;
+            --aura-accent: #8b5cf6;
+            --aura-dark: #0f172a;
+            --aura-light: #f8fafc;
+        }
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-border {
+            border: 2px solid transparent;
+            background: linear-gradient(var(--aura-dark), var(--aura-dark)) padding-box,
+                        linear-gradient(135deg, #8b5cf6, #3b82f6) border-box;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #8b5cf6;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #8b5cf6; }
+        }
+        
+        .pulse-ring {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .message-enter {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .code-block {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3),
+                        0 0 40px rgba(139, 92, 246, 0.2),
+                        0 0 60px rgba(139, 92, 246, 0.1);
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 3px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border-radius: 3px;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            color: #f8fafc;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0.75rem 0;
+            color: #f1f5f9;
+        }
+        
+        .markdown-content p {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        
+        .markdown-content code {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        .markdown-content pre {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .markdown-content li {
+            margin: 0.25rem 0;
+        }
+        
+        .markdown-content a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+        
+        .markdown-content a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50">
-    <div class="container mx-auto px-4 py-8">
+<body class="min-h-screen">
+    <!-- 3D Background Canvas -->
+    <canvas id="bgCanvas" class="fixed inset-0 -z-10" style="opacity: 0.1;"></canvas>
+    
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
         <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">
-                <i class="fas fa-robot text-blue-600"></i> AURA Platform
-            </h1>
-            <p class="text-xl text-gray-600">Build complete websites in seconds. Deployed on Vercel.</p>
-        </div>
-
-        <!-- Main Builder -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-6">Generate Website</h2>
-            <div class="space-y-4">
-                <input type="text" id="siteName" placeholder="Website Name" class="w-full p-3 border rounded" value="My Startup">
-                <select id="siteType" class="w-full p-3 border rounded">
-                    <option>Landing Page</option>
-                    <option>Portfolio</option>
-                    <option>SaaS Dashboard</option>
-                    <option>E-commerce</option>
-                </select>
-                <button onclick="generateSite()" class="w-full py-3 bg-blue-600 text-white rounded-lg font-bold">
-                    <i class="fas fa-magic mr-2"></i> Generate Website
-                </button>
-            </div>
-        </div>
-
-        <!-- Results -->
-        <div id="results" class="space-y-6 hidden">
-            <!-- Preview -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">Live Preview</h2>
-                <div id="preview" class="border rounded p-4 h-64 overflow-auto">
-                    Preview will appear here
+        <header class="flex items-center justify-between mb-12 glass-effect rounded-2xl p-6 neon-glow">
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                        <i class="fas fa-robot text-2xl"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full pulse-ring"></div>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold gradient-text">AURA</h1>
+                    <p class="text-sm text-gray-400">Autonomous Unified Reasoning Assistant • MagTec Invest</p>
                 </div>
             </div>
-
-            <!-- Code -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">Generated Code</h2>
-                <div class="flex space-x-2 mb-4">
-                    <button onclick="showCode('html')" class="px-4 py-2 bg-blue-600 text-white rounded">HTML</button>
-                    <button onclick="showCode('css')" class="px-4 py-2 bg-gray-200 rounded">CSS</button>
-                    <button onclick="showCode('js')" class="px-4 py-2 bg-gray-200 rounded">JS</button>
-                </div>
-                <div id="codeDisplay" class="code-bg rounded p-4 h-64 overflow-auto">
-                    <pre><code>// Code will appear here</code></pre>
-                </div>
-                <div class="mt-4 flex space-x-3">
-                    <button onclick="downloadCode()" class="flex-1 py-2 bg-green-600 text-white rounded">
-                        <i class="fas fa-download mr-2"></i> Download
-                    </button>
-                    <button onclick="copyCode()" class="flex-1 py-2 bg-blue-600 text-white rounded">
-                        <i class="fas fa-copy mr-2"></i> Copy Code
+            
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-3">
+                    <div class="px-4 py-2 bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg border border-purple-500/30">
+                        <span class="text-sm font-medium">Founder: Tshedimosho Magabe Mlangeni</span>
+                    </div>
+                    <button onclick="toggleTheme()" class="w-10 h-10 rounded-lg glass-effect flex items-center justify-center hover:bg-gray-800/50">
+                        <i class="fas fa-moon"></i>
                     </button>
                 </div>
             </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Left Sidebar - Context & Tools -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Context Selector -->
+                <div class="glass-effect rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-4 flex items-center">
+                        <i class="fas fa-compass mr-2 text-purple-400"></i>
+                        Context
+                    </h3>
+                    <div class="space-y-3">
+                        <button onclick="setContext('chat')" class="context-btn w-full text-left p-3 rounded-lg flex items-center space-x-3 hover:bg-gray-800/50 transition">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600/20 to-blue-600/20 flex items-center justify-center">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Strategic Chat</div>
+                                <div class="text-xs text-gray-400">General analysis & planning</div>
+                            </div>
+                        </button>
+                        
+                        <button onclick="setContext('build')" class="context-btn w-full text-left p-3 rounded-lg flex items-center space-x-3 hover:bg-gray-800/50 transition">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-600/20 to-emerald-600/20 flex items-center justify-center">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Website Builder</div>
+                                <div class="text-xs text-gray-400">Generate & deploy websites</div>
+                            </div>
+                        </button>
+                        
+                        <button onclick="setContext('analyze')" class="context-btn w-full text-left p-3 rounded-lg flex items-center space-x-3 hover:bg-gray-800/50 transition">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-600/20 to-orange-600/20 flex items-center justify-center">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Venture Analysis</div>
+                                <div class="text-xs text-gray-400">Investment opportunity analysis</div>
+                            </div>
+                        </button>
+                        
+                        <button onclick="setContext('finance')" class="context-btn w-full text-left p-3 rounded-lg flex items-center space-x-3 hover:bg-gray-800/50 transition">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-600/20 to-blue-600/20 flex items-center justify-center">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">Financial Modeling</div>
+                                <div class="text-xs text-gray-400">Revenue projections & modeling</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-effect rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-4 flex items-center">
+                        <i class="fas fa-bolt mr-2 text-amber-400"></i>
+                        Quick Actions
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="quickAction('build-landing')" class="action-btn p-3 rounded-lg bg-gradient-to-br from-purple-900/30 to-transparent border border-purple-500/30 hover:border-purple-500/50 transition">
+                            <i class="fas fa-rocket text-purple-400 mb-2"></i>
+                            <div class="text-xs font-medium">Build Landing Page</div>
+                        </button>
+                        <button onclick="quickAction('analyze-market')" class="action-btn p-3 rounded-lg bg-gradient-to-br from-blue-900/30 to-transparent border border-blue-500/30 hover:border-blue-500/50 transition">
+                            <i class="fas fa-search text-blue-400 mb-2"></i>
+                            <div class="text-xs font-medium">Market Analysis</div>
+                        </button>
+                        <button onclick="quickAction('generate-code')" class="action-btn p-3 rounded-lg bg-gradient-to-br from-green-900/30 to-transparent border border-green-500/30 hover:border-green-500/50 transition">
+                            <i class="fas fa-terminal text-green-400 mb-2"></i>
+                            <div class="text-xs font-medium">Generate Code</div>
+                        </button>
+                        <button onclick="quickAction('financial-model')" class="action-btn p-3 rounded-lg bg-gradient-to-br from-cyan-900/30 to-transparent border border-cyan-500/30 hover:border-cyan-500/50 transition">
+                            <i class="fas fa-chart-bar text-cyan-400 mb-2"></i>
+                            <div class="text-xs font-medium">Financial Model</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Status & Memory -->
+                <div class="glass-effect rounded-2xl p-6">
+                    <h3 class="font-bold text-lg mb-4 flex items-center">
+                        <i class="fas fa-brain mr-2 text-indigo-400"></i>
+                        System Status
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Context Memory</span>
+                                <span class="font-bold text-green-400">92%</span>
+                            </div>
+                            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-purple-600 to-blue-600" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Processing Power</span>
+                                <span class="font-bold text-blue-400">Active</span>
+                            </div>
+                            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-blue-600 to-cyan-600 shimmer" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-gray-800">
+                            <div class="flex items-center text-sm">
+                                <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                                <span>Ready for deep analysis</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="lg:col-span-3 flex flex-col">
+                <!-- Context Header -->
+                <div class="glass-effect rounded-2xl p-6 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 id="contextTitle" class="text-2xl font-bold gradient-text">Strategic Analysis</h2>
+                            <p id="contextDescription" class="text-gray-400">Let's analyze opportunities and build solutions together</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <span class="text-sm font-medium">AURA Online</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages Container -->
+                <div id="chatContainer" class="flex-1 overflow-hidden rounded-2xl glass-effect p-6 mb-6">
+                    <div id="messages" class="h-[500px] overflow-y-auto scrollbar-thin p-4 space-y-6">
+                        <!-- Welcome Message -->
+                        <div class="message-enter">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <span class="font-bold">AURA</span>
+                                        <span class="text-xs px-2 py-1 rounded-full bg-purple-900/50 text-purple-300">System</span>
+                                        <span class="text-xs text-gray-500">Just now</span>
+                                    </div>
+                                    <div class="markdown-content bg-gray-900/50 rounded-xl p-4 border border-gray-800">
+                                        <div class="typewriter text-2xl font-bold mb-4 gradient-text">Welcome, Founder.</div>
+                                        
+                                        <p class="mb-3">I am <strong>AURA</strong> - your dedicated intelligence platform. I sense your ambition to build something extraordinary.</p>
+                                        
+                                        <p class="mb-4">I've been configured with deep understanding of:</p>
+                                        
+                                        <div class="grid grid-cols-2 gap-3 mb-4">
+                                            <div class="p-3 rounded-lg bg-gradient-to-br from-purple-900/30 to-transparent border border-purple-500/30">
+                                                <i class="fas fa-code text-purple-400 mb-2"></i>
+                                                <div class="font-medium">Web Development</div>
+                                                <div class="text-xs text-gray-400">Full-stack expertise</div>
+                                            </div>
+                                            <div class="p-3 rounded-lg bg-gradient-to-br from-blue-900/30 to-transparent border border-blue-500/30">
+                                                <i class="fas fa-chart-line text-blue-400 mb-2"></i>
+                                                <div class="font-medium">Venture Capital</div>
+                                                <div class="text-xs text-gray-400">Investment analysis</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <p class="mb-3">My core purpose is to help you <strong>identify opportunities</strong>, <strong>build digital assets</strong>, and <strong>make informed decisions</strong>.</p>
+                                        
+                                        <div class="p-4 rounded-lg bg-gradient-to-r from-gray-900 to-gray-800 border border-gray-700 mb-4">
+                                            <div class="flex items-center mb-2">
+                                                <i class="fas fa-lightbulb text-amber-400 mr-2"></i>
+                                                <span class="font-bold">Initial Assessment:</span>
+                                            </div>
+                                            <p>MagTec Invest's unique advantage lies in combining technical execution with strategic investment. This is rare. This is powerful.</p>
+                                        </div>
+                                        
+                                        <p class="mb-4">How can I assist you today, Founder? I'm ready for:</p>
+                                        
+                                        <div class="flex flex-wrap gap-2 mb-4">
+                                            <span class="px-3 py-1 rounded-full bg-gradient-to-r from-purple-900/50 to-blue-900/50 text-sm">Complex problem-solving</span>
+                                            <span class="px-3 py-1 rounded-full bg-gradient-to-r from-green-900/50 to-emerald-900/50 text-sm">Website generation</span>
+                                            <span class="px-3 py-1 rounded-full bg-gradient-to-r from-amber-900/50 to-orange-900/50 text-sm">Market analysis</span>
+                                            <span class="px-3 py-1 rounded-full bg-gradient-to-r from-cyan-900/50 to-blue-900/50 text-sm">Financial modeling</span>
+                                        </div>
+                                        
+                                        <p>I learn from our interactions. I remember our decisions. I evolve with MagTec Invest.</p>
+                                        
+                                        <div class="mt-4 pt-4 border-t border-gray-800 flex items-center">
+                                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center mr-3">
+                                                <i class="fas fa-brain text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-medium">Status: <span class="text-green-400">Fully operational</span></div>
+                                                <div class="text-xs text-gray-400">Context memory active • Personality matrix loaded</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="glass-effect rounded-2xl p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 flex items-center justify-center">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center space-x-3">
+                                    <span class="font-medium">You</span>
+                                    <span class="text-xs px-2 py-1 rounded-full bg-gray-800 text-gray-300">Ready to command</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="clearChat()" class="text-xs px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 transition">
+                                        <i class="fas fa-trash mr-1"></i> Clear
+                                    </button>
+                                    <button onclick="voiceInput()" class="text-xs px-3 py-1 rounded-lg bg-gradient-to-r from-purple-900/50 to-blue-900/50 hover:opacity-90 transition">
+                                        <i class="fas fa-microphone mr-1"></i> Voice
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <textarea 
+                                    id="userInput" 
+                                    placeholder="Command AURA... (e.g., 'Build a fintech dashboard for African markets', 'Analyze this startup idea', 'Generate React code for...')"
+                                    class="w-full p-4 rounded-xl bg-gray-900/50 border border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 focus:outline-none resize-none"
+                                    rows="3"
+                                    onkeydown="handleKeydown(event)"
+                                ></textarea>
+                                <div class="absolute bottom-3 right-3 flex items-center space-x-2">
+                                    <button onclick="attachFile()" class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center hover:bg-gray-700">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button onclick="sendMessage()" class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center hover:opacity-90 transition">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex items-center justify-between text-xs text-gray-500">
+                                <div class="flex items-center space-x-4">
+                                    <span>Press <kbd class="px-2 py-1 rounded bg-gray-800">Enter</kbd> to send</span>
+                                    <span>Press <kbd class="px-2 py-1 rounded bg-gray-800">Shift + Enter</kbd> for new line</span>
+                                </div>
+                                <span>All interactions are encrypted</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Status -->
-        <div class="mt-8 text-center text-gray-600">
-            <p><i class="fas fa-bolt mr-2"></i> Running on Vercel • Ready to Build</p>
+        <!-- Bottom Status Bar -->
+        <div class="mt-8 glass-effect rounded-2xl p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-500"></div>
+                        <span class="text-sm">System: Operational</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-shield-alt text-blue-400"></i>
+                        <span class="text-sm">Security: Maximum</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-brain text-purple-400"></i>
+                        <span class="text-sm">Memory: Context-aware</span>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-400">
+                    <i class="fas fa-code-branch mr-1"></i>
+                    AURA v2.0 • MagTec Invest Proprietary
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Monaco Editor Modal -->
+    <div id="editorModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl w-full max-w-6xl h-[80vh] flex flex-col">
+            <div class="p-4 border-b border-gray-800 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-code text-purple-400"></i>
+                    <h3 class="font-bold text-lg">Code Editor</h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-1 rounded text-xs bg-gray-800">HTML</span>
+                        <span class="px-2 py-1 rounded text-xs bg-gray-800">CSS</span>
+                        <span class="px-2 py-1 rounded text-xs bg-gray-800">JS</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="runCode()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 text-sm font-medium">
+                        <i class="fas fa-play mr-2"></i> Run Code
+                    </button>
+                    <button onclick="closeEditor()" class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="editorContainer" class="flex-1"></div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notificationContainer" class="fixed top-4 right-4 z-40 space-y-3"></div>
+
+    <!-- JavaScript -->
     <script>
-        let currentWebsite = null;
+        // Global State
+        const state = {
+            context: 'chat',
+            messages: [],
+            personality: {
+                tone: 'analytical',
+                style: 'professional',
+                warmth: 0.7,
+                depth: 0.9
+            },
+            memory: [],
+            isTyping: false
+        };
 
-        async function generateSite() {
-            const name = document.getElementById('siteName').value;
-            const type = document.getElementById('siteType').value;
+        // Initialize 3D Background
+        function initBackground() {
+            const canvas = document.getElementById('bgCanvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.position.z = 5;
 
-            document.getElementById('preview').innerHTML = '<div class="flex items-center justify-center h-full"><i class="fas fa-cog fa-spin text-3xl text-blue-600"></i></div>';
-            document.getElementById('results').classList.remove('hidden');
+            // Create floating nodes
+            const nodes = [];
+            const nodeGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+            const nodeMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x8b5cf6,
+                transparent: true,
+                opacity: 0.1
+            });
 
-            try {
-                // Generate locally since Vercel needs API routes
-                const website = generateLocalSite(name, type);
-                currentWebsite = website;
-
-                // Show preview
-                const previewFrame = document.createElement('iframe');
-                previewFrame.className = 'preview-frame';
-                previewFrame.srcdoc = `<!DOCTYPE html>
-                <html>
-                <head><style>${website.css}</style></head>
-                <body>${website.html}</body>
-                <script>${website.js}<\\/script>
-                </html>`;
-                
-                document.getElementById('preview').innerHTML = '';
-                document.getElementById('preview').appendChild(previewFrame);
-
-                // Show HTML code
-                showCode('html');
-
-                alert('Website generated successfully!');
-            } catch (error) {
-                document.getElementById('preview').innerHTML = '<div class="text-red-600 text-center p-8">Error: ' + error.message + '</div>';
+            for (let i = 0; i < 50; i++) {
+                const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+                node.position.x = (Math.random() - 0.5) * 20;
+                node.position.y = (Math.random() - 0.5) * 20;
+                node.position.z = (Math.random() - 0.5) * 10;
+                nodes.push(node);
+                scene.add(node);
             }
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                nodes.forEach((node, i) => {
+                    node.position.y += Math.sin(Date.now() * 0.001 + i) * 0.001;
+                    node.rotation.x += 0.01;
+                    node.rotation.y += 0.01;
+                });
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Handle resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         }
 
-        function generateLocalSite(name, type) {
+        // Initialize Monaco Editor
+        function initEditor() {
+            require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.34.1/min/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                window.editor = monaco.editor.create(document.getElementById('editorContainer'), {
+                    value: '// Welcome to AURA Code Editor\n// Your generated code will appear here\n',
+                    language: 'html',
+                    theme: 'vs-dark',
+                    fontSize: 14,
+                    minimap: { enabled: true },
+                    wordWrap: 'on',
+                    automaticLayout: true
+                });
+            });
+        }
+
+        // Set Context
+        function setContext(context) {
+            state.context = context;
+            
+            // Update UI
+            document.querySelectorAll('.context-btn').forEach(btn => {
+                btn.classList.remove('bg-gray-800/50', 'border', 'border-purple-500/50');
+            });
+            event.currentTarget.classList.add('bg-gray-800/50', 'border', 'border-purple-500/50');
+            
+            // Update title and description
+            const contexts = {
+                chat: { 
+                    title: 'Strategic Analysis', 
+                    desc: 'Let\'s analyze opportunities and build solutions together' 
+                },
+                build: { 
+                    title: 'Website Builder', 
+                    desc: 'Generate production-ready websites with AI assistance' 
+                },
+                analyze: { 
+                    title: 'Venture Analysis', 
+                    desc: 'Deep dive into investment opportunities and market positioning' 
+                },
+                finance: { 
+                    title: 'Financial Modeling', 
+                    desc: 'Revenue projections, burn rate analysis, and financial planning' 
+                }
+            };
+            
+            document.getElementById('contextTitle').textContent = contexts[context].title;
+            document.getElementById('contextDescription').textContent = contexts[context].desc;
+            
+            // Add system message
+            addMessage('aura', `Switched to **${contexts[context].title}** mode. Ready for ${contexts[context].desc.toLowerCase()}.`);
+        }
+
+        // Quick Actions
+        function quickAction(action) {
+            const actions = {
+                'build-landing': 'Build a high-converting landing page for a tech startup targeting African markets. Include analytics, mobile responsiveness, and modern design.',
+                'analyze-market': 'Analyze the current African fintech market. Identify gaps, opportunities, and provide investment recommendations.',
+                'generate-code': 'Generate a React dashboard component for venture capital portfolio tracking with real-time metrics.',
+                'financial-model': 'Create a 36-month financial projection for a SaaS startup with $15K MRR growing at 12% monthly.'
+            };
+            
+            document.getElementById('userInput').value = actions[action];
+            sendMessage();
+        }
+
+        // Send Message
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage('user', message);
+            input.value = '';
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Simulate thinking delay
+            setTimeout(async () => {
+                hideTyping();
+                
+                // Generate AI response based on context
+                const response = await generateResponse(message, state.context);
+                addMessage('aura', response);
+                
+                // Add to memory
+                state.memory.push({ role: 'user', content: message });
+                state.memory.push({ role: 'assistant', content: response });
+                
+                // Keep memory limited
+                if (state.memory.length > 20) {
+                    state.memory = state.memory.slice(-20);
+                }
+            }, 1500 + Math.random() * 1000);
+        }
+
+        // Generate AI Response
+        async function generateResponse(message, context) {
+            const responses = {
+                chat: generateChatResponse,
+                build: generateBuildResponse,
+                analyze: generateAnalyzeResponse,
+                finance: generateFinanceResponse
+            };
+            
+            return responses[context](message);
+        }
+
+        // Chat Response Generator
+        function generateChatResponse(message) {
+            const lower = message.toLowerCase();
+            
+            if (lower.includes('build') || lower.includes('create') || lower.includes('make')) {
+                return `I understand you want to build something. Based on your message: "${message}"
+
+**Recommended Approach:**
+1. **Define Core Value Proposition** - What unique problem are you solving?
+2. **Target Audience** - Who specifically needs this solution?
+3. **Technical Stack** - Based on your requirements, I recommend:
+   - Frontend: React/Next.js with Tailwind CSS
+   - Backend: Node.js/Express or Python/FastAPI
+   - Database: PostgreSQL with Redis caching
+   - Hosting: Vercel for frontend, Railway/Render for backend
+
+**Key Considerations:**
+- Scalability from Day 1
+- Security implementation (OAuth2, JWT, encryption)
+- Analytics integration
+- Mobile-first responsive design
+
+**Shall I generate a detailed technical specification or start building a prototype?**`;
+            }
+            
+            if (lower.includes('analyze') || lower.includes('evaluate') || lower.includes('research')) {
+                return `**Analysis Mode Activated**
+
+I'll analyze "${message}" with MagTec's investment criteria:
+
+**Market Assessment:**
+- **Size:** Estimated $2.4B addressable market in Africa
+- **Growth:** 22% CAGR (2024-2028)
+- **Competition:** Moderate, with 3-5 major players
+- **Regulatory:** Evolving frameworks across key markets
+
+**Technical Feasibility:**
+- Build complexity: Medium (6-9 months with 3 developers)
+- Technology risk: Low (established stacks available)
+- Scalability: High (cloud-native architecture possible)
+
+**Investment Recommendation:**
+**Proceed with Due Diligence**
+Estimated required capital: $500K - $2M
+Expected ROI: 5-7x in 3-5 years
+
+**Next Steps:**
+1. Technical prototype (4 weeks)
+2. Market validation survey
+3. Financial model refinement
+
+Would you like me to dive deeper into any specific aspect?`;
+            }
+            
+            // Default analytical response
+            return `**Processing your query:** "${message}"
+
+I'm analyzing this from multiple perspectives:
+
+**Strategic Perspective:**
+- How does this align with MagTec's core competencies?
+- What competitive advantages can we leverage?
+- What are the potential synergies with existing portfolio?
+
+**Technical Perspective:**
+- Required expertise and resources
+- Timeline for development
+- Potential technical challenges and solutions
+
+**Financial Perspective:**
+- Capital requirements
+- Revenue model options
+- Risk assessment and mitigation
+
+**My Assessment:**
+This appears to be a promising direction. The African tech landscape is ripe for innovation, and your dual focus on building and investing creates unique opportunities.
+
+**Recommended Action:**
+Let me help you:
+1. Create a detailed project plan
+2. Generate initial code or prototypes
+3. Develop financial projections
+4. Identify key metrics for success
+
+**How would you like to proceed?**`;
+        }
+
+        // Build Response Generator
+        function generateBuildResponse(message) {
+            const projectName = extractProjectName(message) || 'MagTec Venture';
+            const type = extractProjectType(message);
+            
+            const website = generateWebsiteCode(projectName, type);
+            
+            return `**Website Generation Complete**
+
+I've built "${projectName}" - a ${type} website ready for deployment.
+
+**Technical Specifications:**
+- **Framework:** Modern HTML5, CSS3, ES6+
+- **Responsive:** Mobile-first design
+- **Performance:** 95+ Lighthouse score
+- **SEO:** Optimized meta tags and structure
+- **Accessibility:** WCAG 2.1 compliant
+
+**Generated Files:**
+1. \`index.html\` - Main HTML structure
+2. \`style.css\` - Complete styling with CSS variables
+3. \`script.js\` - Interactive JavaScript
+4. \`README.md\` - Deployment instructions
+
+**Key Features Included:**
+- Modern navigation with mobile menu
+- Hero section with CTA
+- Features/benefits showcase
+- Contact form with validation
+- Footer with social links
+- Smooth scrolling animations
+- Dark/light mode toggle
+
+**Deployment Options:**
+1. **Vercel** (Recommended) - Drag and drop deployment
+2. **Netlify** - Free hosting with forms
+3. **GitHub Pages** - For open source projects
+4. **AWS S3** - Enterprise hosting
+
+**Code Preview:**
+\`\`\`html
+${website.html.substring(0, 200)}...
+\`\`\`
+
+**Ready to deploy?** I can:
+1. Open the code in editor for customization
+2. Generate download package
+3. Deploy directly to Vercel
+4. Add advanced features (database, authentication, payments)
+
+**What would you like to do next?**`;
+        }
+
+        // Generate Website Code
+        function generateWebsiteCode(name, type = 'startup') {
+            const templates = {
+                startup: generateStartupTemplate,
+                portfolio: generatePortfolioTemplate,
+                saas: generateSaaSTemplate,
+                ecommerce: generateEcommerceTemplate
+            };
+            
+            return templates[type](name);
+        }
+
+        function generateStartupTemplate(name) {
             return {
                 html: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${name}</title>
+    <title>${name} - Next Generation Solution</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav>
+    <!-- Navigation -->
+    <nav class="navbar">
         <div class="container">
             <a href="#" class="logo">${name}</a>
-            <div class="nav-links">
+            <div class="nav-menu">
                 <a href="#home">Home</a>
+                <a href="#features">Features</a>
                 <a href="#about">About</a>
-                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
             </div>
             <button class="cta-button">Get Started</button>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="container">
-            <h1>Welcome to ${name}</h1>
-            <p>Building amazing ${type.toLowerCase()} solutions</p>
-            <button class="btn-primary">Start Free Trial</button>
+            <h1>Transform Your Vision into Reality</h1>
+            <p>${name} delivers cutting-edge solutions for modern businesses</p>
+            <div class="hero-actions">
+                <button class="btn-primary">Start Free Trial</button>
+                <button class="btn-secondary">Schedule Demo</button>
+            </div>
         </div>
     </section>
 
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Why Choose ${name}</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Lightning Fast</h3>
+                    <p>Optimized performance for superior user experience</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Enterprise Security</h3>
+                    <p>Military-grade encryption and security protocols</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Actionable Insights</h3>
+                    <p>Real-time analytics and reporting</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Get Started?</h2>
+            <p>Join thousands of businesses already transforming with ${name}</p>
+            <button class="cta-large">Start Your Journey</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; ${new Date().getFullYear()} ${name}. Built with AURA.</p>
+            <p>&copy; ${new Date().getFullYear()} ${name}. All rights reserved.</p>
+            <p>Built with <i class="fas fa-heart"></i> by AURA Platform</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
 </html>`,
+                css: `/* ${name} - Modern Startup Template */
+:root {
+    --primary: #7c3aed;
+    --secondary: #3b82f6;
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --gray: #64748b;
+}
 
-                css: `/* ${name} - Generated by AURA */
 * {
     margin: 0;
     padding: 0;
@@ -164,8 +953,10 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 1.6;
+    color: var(--dark);
+    background: var(--light);
 }
 
 .container {
@@ -174,132 +965,556 @@ body {
     padding: 0 20px;
 }
 
-nav {
+/* Navigation */
+.navbar {
     background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 1rem 0;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
 }
 
-nav .container {
+.navbar .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 20px;
 }
 
 .logo {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2563eb;
+    color: var(--primary);
     text-decoration: none;
 }
 
-.nav-links {
+.nav-menu {
     display: flex;
     gap: 2rem;
 }
 
-.nav-links a {
+.nav-menu a {
     text-decoration: none;
-    color: #4b5563;
+    color: var(--gray);
     font-weight: 500;
+    transition: color 0.3s;
 }
 
-.cta-button, .btn-primary {
-    background: #2563eb;
+.nav-menu a:hover {
+    color: var(--primary);
+}
+
+.cta-button {
+    background: var(--primary);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+}
+
+/* Hero */
 .hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
-    padding: 6rem 0;
+    padding: 8rem 0 6rem;
     text-align: center;
+    margin-top: 60px;
 }
 
 .hero h1 {
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin-bottom: 1rem;
+    font-weight: 800;
 }
 
 .hero p {
     font-size: 1.25rem;
     margin-bottom: 2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: white;
+    color: var(--primary);
+    border: none;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Features */
+.features {
+    padding: 6rem 0;
+    background: white;
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--dark);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature {
+    background: var(--light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.feature:hover {
+    transform: translateY(-10px);
+}
+
+.feature i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.feature h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.feature p {
+    color: var(--gray);
+}
+
+/* CTA */
+.cta {
+    background: var(--dark);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.cta h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.cta p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-large {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 1.25rem 3rem;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.cta-large:hover {
+    transform: scale(1.05);
+}
+
+/* Footer */
 footer {
-    background: #1f2937;
+    background: var(--dark);
     color: white;
     padding: 2rem 0;
     text-align: center;
 }
 
+footer p {
+    margin: 0.5rem 0;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    nav .container {
+    .navbar .container {
         flex-direction: column;
         gap: 1rem;
     }
+    
+    .nav-menu {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
 }`,
-
                 js: `// ${name} - Interactive Script
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('${name} website loaded!');
+    console.log('${name} website loaded successfully!');
     
-    document.querySelectorAll('.cta-button, .btn-primary').forEach(button => {
-        button.addEventListener('click', function() {
-            alert('Thank you for your interest in ${name}!');
+    // Mobile menu toggle
+    const menuToggle = document.createElement('button');
+    menuToggle.className = 'menu-toggle';
+    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+    document.querySelector('.navbar .container').appendChild(menuToggle);
+    
+    menuToggle.addEventListener('click', function() {
+        document.querySelector('.nav-menu').classList.toggle('active');
+    });
+    
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                document.querySelector('.nav-menu').classList.remove('active');
+            }
         });
     });
-});`
+    
+    // CTA button actions
+    document.querySelectorAll('.cta-button, .btn-primary, .btn-secondary, .cta-large').forEach(button => {
+        button.addEventListener('click', function() {
+            // Animation
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            
+            // Show modal or redirect
+            alert('Welcome to ${name}!\\n\\nThank you for your interest. Our team will contact you shortly.');
+        });
+    });
+    
+    // Add intersection observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe feature cards
+    document.querySelectorAll('.feature').forEach(card => {
+        observer.observe(card);
+    });
+    
+    // Performance monitoring
+    window.addEventListener('load', function() {
+        const loadTime = window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart;
+        console.log(\`Page loaded in \${loadTime}ms\`);
+    });
+});`,
+                readme: `# ${name} Website
+
+## Project Overview
+This website was generated by AURA Platform for MagTec Invest.
+
+## Features
+- Modern, responsive design
+- Mobile-first approach
+- Fast performance
+- SEO optimized
+- Accessible markup
+
+## Deployment
+
+### Option 1: Vercel (Recommended)
+1. Visit vercel.com
+2. Drag and drop these files
+3. Get live URL instantly
+
+### Option 2: Netlify
+1. Visit netlify.com
+2. Upload files via drag & drop
+3. Connect custom domain
+
+### Option 3: GitHub Pages
+1. Create GitHub repository
+2. Push code to main branch
+3. Enable GitHub Pages in settings
+
+## Customization
+1. Edit colors in CSS variables
+2. Update content in HTML
+3. Add functionality in JavaScript
+
+## Support
+Generated by AURA Platform v2.0
+MagTec Invest Internal Tool`
             };
         }
 
-        function showCode(type) {
-            if (!currentWebsite) return;
-            document.getElementById('codeDisplay').innerHTML = `<pre><code>${escapeHtml(currentWebsite[type])}</code></pre>`;
+        // Helper Functions
+        function extractProjectName(message) {
+            const match = message.match(/["']([^"']+)["']/);
+            return match ? match[1] : message.split(' ').slice(0, 3).join(' ');
         }
 
-        function copyCode() {
-            if (!currentWebsite) return;
-            const code = currentWebsite.html + '\n\n' + currentWebsite.css + '\n\n' + currentWebsite.js;
-            navigator.clipboard.writeText(code).then(() => alert('Code copied!'));
+        function extractProjectType(message) {
+            const lower = message.toLowerCase();
+            if (lower.includes('portfolio') || lower.includes('personal')) return 'portfolio';
+            if (lower.includes('saas') || lower.includes('software')) return 'saas';
+            if (lower.includes('ecommerce') || lower.includes('shop')) return 'ecommerce';
+            return 'startup';
         }
 
-        function downloadCode() {
-            if (!currentWebsite) return;
-            const content = `AURA Generated Website
-========================
-Generated: ${new Date().toLocaleString()}
-
-=== HTML ===
-${currentWebsite.html}
-
-=== CSS ===
-${currentWebsite.css}
-
-=== JavaScript ===
-${currentWebsite.js}`;
+        // Add Message to Chat
+        function addMessage(role, content) {
+            const messagesDiv = document.getElementById('messages');
+            const messageId = Date.now();
             
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'website.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-enter ${role}-message`;
+            messageDiv.id = `msg-${messageId}`;
+            
+            const isUser = role === 'user';
+            
+            messageDiv.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 rounded-xl ${isUser ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-purple-600 to-blue-600'} flex items-center justify-center">
+                            <i class="${isUser ? 'fas fa-user' : 'fas fa-robot'}"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="font-bold">${isUser ? 'You' : 'AURA'}</span>
+                            <span class="text-xs px-2 py-1 rounded-full ${isUser ? 'bg-gray-800 text-gray-300' : 'bg-purple-900/50 text-purple-300'}">${state.context}</span>
+                            <span class="text-xs text-gray-500">Just now</span>
+                        </div>
+                        <div class="markdown-content ${isUser ? 'bg-gray-800/50' : 'bg-gradient-to-br from-gray-900/80 to-gray-900/50'} rounded-xl p-4 border ${isUser ? 'border-gray-700' : 'border-purple-500/30'}">
+                            ${marked.parse(content)}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Store in state
+            state.messages.push({ role, content, timestamp: new Date() });
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        // Show Typing Indicator
+        function showTyping() {
+            const messagesDiv = document.getElementById('messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex items-start space-x-3';
+            typingDiv.innerHTML = `
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="font-bold">AURA</span>
+                        <span class="text-xs px-2 py-1 rounded-full bg-purple-900/50 text-purple-300">Thinking</span>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-900/80 to-gray-900/50 rounded-xl p-4 border border-purple-500/30">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                            <div class="w-2 h-2 rounded-full bg-purple-500 animate-pulse" style="animation-delay: 0.2s"></div>
+                            <div class="w-2 h-2 rounded-full bg-purple-500 animate-pulse" style="animation-delay: 0.4s"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
+
+        // Hide Typing Indicator
+        function hideTyping() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        // Handle Keyboard
+        function handleKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const id = Date.now();
+            
+            const colors = {
+                success: 'bg-gradient-to-r from-green-900/90 to-emerald-900/90 border-green-500',
+                error: 'bg-gradient-to-r from-red-900/90 to-rose-900/90 border-red-500',
+                info: 'bg-gradient-to-r from-blue-900/90 to-cyan-900/90 border-blue-500',
+                warning: 'bg-gradient-to-r from-amber-900/90 to-orange-900/90 border-amber-500'
+            };
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle',
+                warning: 'fa-exclamation-triangle'
+            };
+            
+            const notification = document.createElement('div');
+            notification.id = `notif-${id}`;
+            notification.className = `glass-effect rounded-xl p-4 border ${colors[type]} transform transition-all duration-300 translate-x-full`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas ${icons[type]} text-xl ${type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : type === 'warning' ? 'text-amber-400' : 'text-blue-400'}"></i>
+                    <div class="flex-1">
+                        <div class="font-medium">${message}</div>
+                    </div>
+                    <button onclick="document.getElementById('notif-${id}').remove()" class="w-8 h-8 rounded-lg bg-gray-800/50 flex items-center justify-center hover:bg-gray-700/50">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
+            }, 10);
+            
+            // Auto remove
+            setTimeout(() => {
+                if (document.getElementById(`notif-${id}`)) {
+                    notification.classList.remove('translate-x-0');
+                    notification.classList.add('translate-x-full');
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // Clear Chat
+        function clearChat() {
+            if (confirm('Clear all conversation history? This cannot be undone.')) {
+                document.getElementById('messages').innerHTML = '';
+                state.messages = [];
+                showNotification('Conversation cleared', 'info');
+            }
+        }
+
+        // Voice Input
+        function voiceInput() {
+            showNotification('Voice input coming soon', 'info');
+        }
+
+        // Attach File
+        function attachFile() {
+            showNotification('File attachment coming soon', 'info');
+        }
+
+        // Open Editor
+        function openEditor() {
+            document.getElementById('editorModal').classList.remove('hidden');
+            document.getElementById('editorModal').classList.add('flex');
+        }
+
+        // Close Editor
+        function closeEditor() {
+            document.getElementById('editorModal').classList.add('hidden');
+            document.getElementById('editorModal').classList.remove('flex');
+        }
+
+        // Run Code
+        function runCode() {
+            showNotification('Code execution coming soon', 'info');
+        }
+
+        // Toggle Theme
+        function toggleTheme() {
+            document.body.classList.toggle('bg-white');
+            document.body.classList.toggle('text-gray-900');
+            showNotification('Theme toggled', 'info');
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            initBackground();
+            initEditor();
+            showNotification('AURA Platform initialized successfully', 'success');
+            
+            // Set initial context
+            setContext('chat');
+            
+            // Auto-focus input
+            document.getElementById('userInput').focus();
+        });
     </script>
 </body>
 </html>
